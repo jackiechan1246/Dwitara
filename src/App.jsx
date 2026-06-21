@@ -5,6 +5,7 @@ import DummyFeatures from './components/DummyFeatures';
 import Home from './pages/Home';
 import CategoryPage from './pages/CategoryPage';
 import CheckoutPage from './pages/CheckoutPage';
+import AdminPage from './pages/AdminPage';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 
@@ -28,6 +29,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
         </Routes>
