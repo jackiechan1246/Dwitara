@@ -3,9 +3,9 @@
   height: 100vh;
   min-height: 700px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   overflow: hidden;
-  background-color: var(--color-bg-secondary);
+  background-color: #1C1B1A;
 }
 
 .hero-background {
@@ -17,67 +17,64 @@
   z-index: 1;
 }
 
-.hero-image-placeholder {
+.hero-img {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #DFD3C3, #C6B6A5); /* Sophisticated, warm neutral gradient */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: cover;
+  object-position: center top;
 }
 
-.placeholder-text {
-  color: rgba(255, 255, 255, 0.6);
-  font-family: var(--font-heading);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-size: 1.2rem;
-  border: 1px dashed rgba(255,255,255,0.4);
-  padding: 1rem 2rem;
+.hero-gradient-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 45%;
+  background: linear-gradient(to top, rgba(28, 27, 26, 0.85) 0%, rgba(28, 27, 26, 0.4) 50%, transparent 100%);
+  z-index: 2;
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: 100%;
+  padding-bottom: 4rem;
 }
 
-.hero-text-box {
-  max-width: 500px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  padding: 3rem 2.5rem;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid rgba(255,255,255,0.5);
+.hero-bottom-text {
+  max-width: 600px;
 }
 
 .hero-subtitle {
   font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.25em;
   color: var(--color-accent);
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: 4rem;
   font-weight: 300;
-  color: var(--color-text-primary);
-  margin-bottom: 1.5rem;
-}
-
-.hero-desc {
-  font-size: 1.1rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 2rem;
+  color: #FFFFFF;
+  margin-bottom: 1.75rem;
+  line-height: 1.1;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .hero-btn {
   gap: 0.5rem;
   padding: 14px 36px;
   font-size: 1.05rem;
+  background: #FFFFFF;
+  color: #1C1B1A;
+  border: none;
+}
+
+.hero-btn:hover {
+  background: var(--color-accent);
+  color: #FFFFFF;
 }
 
 .btn-icon {
@@ -89,11 +86,17 @@
 }
 
 @media (max-width: 768px) {
+  .hero-section {
+    min-height: 500px;
+    height: 70vh;
+  }
   .hero-title {
     font-size: 2.5rem;
   }
-  .hero-text-box {
-    margin: 0 1rem;
-    padding: 2rem 1.5rem;
+  .hero-content {
+    padding-bottom: 2.5rem;
+  }
+  .hero-bottom-text {
+    padding: 0 0.5rem;
   }
 }

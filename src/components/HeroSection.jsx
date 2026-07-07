@@ -2,23 +2,22 @@ import { ArrowRight } from 'lucide-react';
 import './HeroSection.css';
 
 const HeroSection = () => {
+  const scrollToCategories = () => {
+    document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section className="hero-section">
       <div className="hero-background">
-        {/* Placeholder for user's full cover image: */}
-        <div className="hero-image-placeholder">
-          <span className="placeholder-text">Hero Image Placeholder</span>
-        </div>
+        <img src="/Dwitara banner image.png" alt="Dwitara Collection" className="hero-img" />
+        <div className="hero-gradient-overlay"></div>
       </div>
       
       <div className="container hero-content animate-fade-in">
-        <div className="hero-text-box">
+        <div className="hero-bottom-text">
           <span className="hero-subtitle">NEW COLLECTION</span>
           <h1 className="hero-title">Elevate Your Everyday</h1>
-          <p className="hero-desc">
-            Discover mindfully crafted silhouettes for the modern woman. Effortless style, unmatched comfort.
-          </p>
-          <button className="btn-primary hero-btn">
+          <button className="btn-primary hero-btn" onClick={scrollToCategories}>
             Explore Collection <ArrowRight size={18} className="btn-icon" />
           </button>
         </div>

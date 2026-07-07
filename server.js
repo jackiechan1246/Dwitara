@@ -136,6 +136,104 @@ app.post('/api/notify-order', async (req, res) => {
   }
 });
 
+// Shipmozo: Endpoint to push an order
+app.post('/api/push-order', async (req, res) => {
+  try {
+    const { orderDetails, orderId } = req.body;
+    if (!orderDetails || !orderId) {
+      return res.status(400).json({ error: 'Missing order details or order ID' });
+    }
+
+    const { customer, items, paymentMethod, paymentId, address } = orderDetails;
+
+    // We assume the frontend passed us the Supabase UUID and numerical components
+    // Format product_detail for shipmozo
+    const product_detail = items.map(item => ({
+      name: item.name + (item.size ? ` - ${item.size}` : ''),
+      sku_number: item.id.toString(),
+      quantity: item.quantity,
+      discount: "",
+      hsn: "",
+      unit_price: item.price,
+      product_category: "Apparel"
+    }));
+
+    // Calculate total weight (rough estimate: 250g per item)
+    const totalWeight = items.reduce((sum, item) => sum + (250 * item.quantity), 0);
+
+    const shipmozoPayload = {
+      order_id: orderId.toString(),
+      order_date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+      order_type: "ESSENTIALS",
+      consignee_name: `${address.firstName} ${address.lastName}`.trim(),
+      consignee_phone: parseInt(customer.phone) || 0,
+      consignee_email: customer.email,
+      consignee_address_line_one: address.address,
+      consignee_address_line_two: address.apartment || '',
+      consignee_pin_code: parseInt(address.pincode) || 0,
+      consignee_city: address.city,
+      consignee_state: address.state || "Delhi", // Fallback if missing
+      product_detail: product_detail,
+      payment_type: paymentMethod.toUpperCase() === 'COD' ? 'COD' : 'PREPAID',
+      cod_amount: paymentMethod.toUpperCase() === 'COD' ? orderDetails.total.toString() : "",
+      weight: totalWeight,
+      length: 10,
+      width: 10,
+      height: 10,
+      warehouse_id: "" // Empty as per docs if using default or dynamically determining
+    };
+
+    const response = await fetch("https://shipping-api.com/app/api/v1/push-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "public-key": process.env.SHIPMOZO_PUBLIC_KEY,
+        "private-key": process.env.SHIPMOZO_PRIVATE_KEY
+      },
+      body: JSON.stringify(shipmozoPayload)
+    });
+
+    const data = await response.json();
+    console.log("Shipmozo push-order response:", data);
+
+    if (data.result === "1") {
+      res.json({ success: true, shipmozo: data.data });
+    } else {
+      console.error('Shipmozo API returned error:', data.message);
+      res.status(400).json({ success: false, error: data.message });
+    }
+  } catch (error) {
+    console.error('Shipmozo push order error:', error);
+    res.status(500).json({ error: 'Failed to push order to Shipmozo' });
+  }
+});
+
+// Shipmozo: Endpoint to track an order
+app.get('/api/track-order/:awb', async (req, res) => {
+  try {
+    const awb = req.params.awb;
+    if (!awb) return res.status(400).json({ error: 'Missing AWB number' });
+
+    const response = await fetch(`https://shipping-api.com/app/api/v1/track-order?awb_number=${awb}`, {
+      method: "GET",
+      headers: {
+        "public-key": process.env.SHIPMOZO_PUBLIC_KEY,
+        "private-key": process.env.SHIPMOZO_PRIVATE_KEY
+      }
+    });
+
+    const data = await response.json();
+    if (data.result === "1") {
+      res.json({ success: true, tracking: data.data });
+    } else {
+      res.status(400).json({ success: false, error: data.message });
+    }
+  } catch (error) {
+    console.error('Shipmozo track order error:', error);
+    res.status(500).json({ error: 'Failed to fetch tracking details' });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Backend server running securely on port ${PORT}`);

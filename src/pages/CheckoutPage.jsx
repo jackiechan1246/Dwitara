@@ -95,47 +95,57 @@ const CheckoutPage = () => {
       }))
     };
 
+    const generatedShipmozoId = `DWI-${Date.now()}`;
     const { error } = await supabase.from('orders').insert([orderData]);
     if (error) {
       console.error("Error saving order: ", error);
       alert("There was an issue securely saving your order. Please contact support.");
     } else {
       setIsSuccess(true);
+      
+      const orderDetailsPayload = {
+        customer: {
+          name: `${formData.firstName} ${formData.lastName}`.trim(),
+          email: formData.email,
+          phone: formData.phone
+        },
+        items: cartItems.map(i => ({
+          id: i.id,
+          name: i.name,
+          size: i.selectedSize,
+          quantity: i.quantity,
+          price: i.price
+        })),
+        total: finalTotal,
+        paymentMethod,
+        paymentId: razorpayPaymentId,
+        address: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          address: formData.address,
+          apartment: formData.apartment,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode
+        }
+      };
 
-      // Send email notification (fire-and-forget, don't block success)
-      try {
-        await fetch('http://localhost:5000/api/notify-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            orderDetails: {
-              customer: {
-                name: `${formData.firstName} ${formData.lastName}`.trim(),
-                email: formData.email,
-                phone: formData.phone
-              },
-              items: cartItems.map(i => ({
-                name: i.name,
-                size: i.selectedSize,
-                quantity: i.quantity,
-                price: i.price
-              })),
-              total: finalTotal,
-              paymentMethod,
-              paymentId: razorpayPaymentId,
-              address: {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                address: formData.address,
-                city: formData.city,
-                pincode: formData.pincode
-              }
-            }
-          })
-        });
-      } catch (emailErr) {
-        console.warn("Email notification failed (non-critical):", emailErr);
-      }
+      // 1. Send email notification (fire-and-forget, don't block success)
+      fetch('http://localhost:5000/api/notify-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderDetails: orderDetailsPayload })
+      }).catch(emailErr => console.warn("Email notification failed (non-critical):", emailErr));
+
+      // 2. Push to Shipmozo Logistics (fire-and-forget)
+      fetch('http://localhost:5000/api/push-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          orderDetails: orderDetailsPayload,
+          orderId: generatedShipmozoId 
+        })
+      }).catch(shipmozoErr => console.warn("Shipmozo push failed (non-critical):", shipmozoErr));
     }
   };
 
