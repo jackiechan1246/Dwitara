@@ -16,7 +16,7 @@ export const dummyProducts = [
 
   // --- CO-ORD SETS ---
   { 
-    id: 5, name: 'Afterglow Lounge Set', price: 2499, category: 'Co-ord Full Sets', colors: ['#4a4c4e', '#63666a'], 
+    id: 5, name: 'Afterglow Lounge Set', price: 2499, originalPrice: 3249, category: 'Co-ord Full Sets', colors: ['#4a4c4e', '#63666a'], 
     images: { primary: '/Acid wash Co -ord set (1).png', hover: '/Acid wash Co -ord set (2).png' }
   },
   { 
@@ -28,7 +28,7 @@ export const dummyProducts = [
     images: { primary: '/Acid wash Co -ord set purple(1).png', hover: '/Acid wash Co -ord set purple(2).png' }
   },
   { 
-    id: 8, name: 'Dream State Lounge Set', price: 2599, category: 'Co-ord Full Sets', colors: ['#111111', '#2a2a2a'], 
+    id: 8, name: 'Dream State Lounge Set', price: 2599, originalPrice: 3379, category: 'Co-ord Full Sets', colors: ['#111111', '#2a2a2a'], 
     images: { primary: '/Day dreamer mode co-ord set , black (1).png', hover: '/Day dreamer mode co-ord set , black (2).png' }
   },
   { 
@@ -44,7 +44,7 @@ export const dummyProducts = [
     images: { primary: '/Denim embroidery co-ord Set Black(1).png', hover: '/Denim embroidery co-ord Set Black(2).png' }
   },
   { 
-    id: 12, name: 'Rosé Dream Set', price: 2599, category: 'Co-ord Full Sets', colors: ['#c78b98', '#dfa8b4'], 
+    id: 12, name: 'Rosé Dream Set', price: 2599, originalPrice: 3379, category: 'Co-ord Full Sets', colors: ['#c78b98', '#dfa8b4'], 
     images: { primary: '/Dreamer embroidery co-ord Set Pink(1).png', hover: '/Dreamer embroidery co-ord Set Pink(2).png' }
   },
   { 

@@ -146,8 +146,6 @@ app.post('/api/push-order', async (req, res) => {
 
     const { customer, items, paymentMethod, paymentId, address } = orderDetails;
 
-    // We assume the frontend passed us the Supabase UUID and numerical components
-    // Format product_detail for shipmozo
     const product_detail = items.map(item => ({
       name: item.name + (item.size ? ` - ${item.size}` : ''),
       sku_number: item.id.toString(),
@@ -158,7 +156,6 @@ app.post('/api/push-order', async (req, res) => {
       product_category: "Apparel"
     }));
 
-    // Calculate total weight (rough estimate: 250g per item)
     const totalWeight = items.reduce((sum, item) => sum + (250 * item.quantity), 0);
 
     const shipmozoPayload = {
@@ -180,7 +177,7 @@ app.post('/api/push-order', async (req, res) => {
       length: 10,
       width: 10,
       height: 10,
-      warehouse_id: "" // Empty as per docs if using default or dynamically determining
+      warehouse_id: "" // Empty as per docs
     };
 
     const response = await fetch("https://shipping-api.com/app/api/v1/push-order", {

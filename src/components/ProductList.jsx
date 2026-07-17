@@ -57,6 +57,9 @@ const ProductList = ({ title = "Trending Now", subtitle = "Discover our most lov
           {products.map((product) => (
             <div key={product.id} className="product-card">
               <div className="product-image-container">
+                {product.originalPrice && (
+                  <div className="discount-badge">LIMITED TIME</div>
+                )}
                 {product.images ? (
                   <>
                     <img src={product.images.primary} alt={product.name} className="product-image product-image-primary" />
@@ -83,7 +86,10 @@ const ProductList = ({ title = "Trending Now", subtitle = "Discover our most lov
               <div className="product-info">
                 <span className="product-category">{product.category}</span>
                 <h3 className="product-title">{product.name}</h3>
-                <p className="product-price">₹{product.price}</p>
+                <p className="product-price">
+                  {product.originalPrice && <span className="original-price">₹{product.originalPrice}</span>}
+                  ₹{product.price}
+                </p>
 
                 <div className="product-variants">
                   {/* Color Selection */}
