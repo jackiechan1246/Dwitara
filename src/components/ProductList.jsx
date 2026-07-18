@@ -1,17 +1,20 @@
 import { useState } from 'react';
-import { ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { ShoppingBag } from 'lucide-react';
 import './ProductList.css';
 import { dummyProducts } from '../data/products';
+import SizeChartModal from './SizeChartModal';
 
-const sizes = ['XS', 'S', 'M', 'L', 'XL'];
+const standardSizes = ['XS', 'S', 'M', 'L', 'XL'];
+const coordSizes = ['M', 'L', 'XL'];
 
 const ProductList = ({ title = "Trending Now", subtitle = "Discover our most loved pieces", products = dummyProducts }) => {
   const [selectedSizes, setSelectedSizes] = useState({});
   const [selectedColors, setSelectedColors] = useState({});
   const [sizeWarning, setSizeWarning] = useState(null); // product id that needs a size
   const [toast, setToast] = useState(null); // { name } of item just added
-  const { addToCart } = useCart();
+  const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
+  const { addToCart, numCoords } = useCart();
 
   const handleSizeSelect = (productId, size) => {
     setSelectedSizes(prev => ({ ...prev, [productId]: size }));
@@ -40,9 +43,9 @@ const ProductList = ({ title = "Trending Now", subtitle = "Discover our most lov
     // 2. Trigger cart shake animation
     window.dispatchEvent(new CustomEvent('cart-shake'));
 
-    // 3. Show success toast
-    setToast({ name: product.name });
-    setTimeout(() => setToast(null), 2500);
+    // 3. Show success toast (longer duration if it's a co-ord promo)
+    setToast({ name: product.name, category: product.category });
+    setTimeout(() => setToast(null), product.category === 'Co-ord Full Sets' ? 4500 : 2500);
   };
 
   return (
@@ -83,13 +86,27 @@ const ProductList = ({ title = "Trending Now", subtitle = "Discover our most lov
                 </div>
               </div>
 
-              <div className="product-info">
-                <span className="product-category">{product.category}</span>
-                <h3 className="product-title">{product.name}</h3>
-                <p className="product-price">
-                  {product.originalPrice && <span className="original-price">₹{product.originalPrice}</span>}
-                  ₹{product.price}
-                </p>
+                <div className="product-info">
+                  <span className="product-category">{product.category}</span>
+                  <h3 className="product-title">{product.name}</h3>
+                  <p className="product-price">
+                    {product.category === 'Graphic Tees' && numCoords > 0 ? (
+                      <>
+                        <span className="original-price">₹{product.price}</span>
+                        <span style={{ color: 'var(--color-text-primary)', fontWeight: 700 }}>₹{Math.round(product.price * 0.5)}</span>
+                        <span style={{ fontSize: '0.72rem', background: '#1C1B1A', color: '#fff', padding: '2px 7px', borderRadius: '20px', fontWeight: 500, marginLeft: '2px' }}>50% OFF</span>
+                      </>
+                    ) : (
+                      <>
+                        {product.originalPrice && (
+                          <span className="original-price">₹{product.originalPrice}</span>
+                        )}
+                        <span style={product.originalPrice ? { color: 'var(--color-text-primary)', fontWeight: 700 } : {}}>
+                          ₹{product.price}
+                        </span>
+                      </>
+                    )}
+                  </p>
 
                 <div className="product-variants">
                   {/* Color Selection */}
@@ -111,10 +128,13 @@ const ProductList = ({ title = "Trending Now", subtitle = "Discover our most lov
                   )}
 
                   {/* Size Selection */}
-                  <div className="variant-row">
-                    <span className="variant-label">Size</span>
+                  <div className="variant-row size-row">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '0.25rem' }}>
+                      <span className="variant-label">Size</span>
+                      <button className="size-guide-link" onClick={() => setIsSizeChartOpen(true)} style={{ background: 'none', border: 'none', color: 'var(--color-text-secondary)', fontSize: '0.75rem', textDecoration: 'underline', cursor: 'pointer' }}>Size Guide</button>
+                    </div>
                     <div className="size-options">
-                      {sizes.map(size => (
+                      {(['Co-ord Full Sets', 'Graphic Tees'].includes(product.category) ? coordSizes : standardSizes).map(size => (
                         <button
                           key={size}
                           className={`size-btn ${selectedSizes[product.id] === size ? 'selected' : ''} ${sizeWarning === product.id && !selectedSizes[product.id] ? 'size-pulse' : ''}`}
@@ -137,13 +157,22 @@ const ProductList = ({ title = "Trending Now", subtitle = "Discover our most lov
         </div>
       </div>
 
-      {/* Success Toast */}
+      {/* Success Toast / Notification */}
       {toast && (
-        <div className="cart-toast">
+        <div className="cart-toast" style={{ minWidth: toast.category === 'Co-ord Full Sets' ? '340px' : '200px' }}>
           <ShoppingBag size={16} />
-          <span>Added to your bag!</span>
+          {toast.category === 'Co-ord Full Sets' ? (
+            <span>
+              <strong>🎉 Unlocked!</strong> Add any Graphic Tee for <strong>50% OFF</strong>!
+            </span>
+          ) : (
+            <span>Added to your bag!</span>
+          )}
         </div>
       )}
+
+      {/* Size Chart Modal */}
+      <SizeChartModal isOpen={isSizeChartOpen} onClose={() => setIsSizeChartOpen(false)} />
     </section>
   );
 };

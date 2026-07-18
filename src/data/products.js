@@ -16,11 +16,11 @@ export const dummyProducts = [
 
   // --- CO-ORD SETS ---
   { 
-    id: 5, name: 'Afterglow Lounge Set', price: 2499, originalPrice: 3249, category: 'Co-ord Full Sets', colors: ['#4a4c4e', '#63666a'], 
+    id: 5, name: 'Afterglow Lounge Set', price: 2499, category: 'Co-ord Full Sets', colors: ['#4a4c4e', '#63666a'], 
     images: { primary: '/Acid wash Co -ord set (1).png', hover: '/Acid wash Co -ord set (2).png' }
   },
   { 
-    id: 6, name: 'Midnight Drift Set', price: 2499, category: 'Co-ord Full Sets', colors: ['#121212', '#2b2b2b'], 
+    id: 6, name: 'Midnight Drift Set', price: 2499, originalPrice: 3199, category: 'Co-ord Full Sets', colors: ['#121212', '#2b2b2b'], 
     images: { primary: '/Acid wash Co -ord set Black(1).png', hover: '/Acid wash Co -ord set Black(2).png' }
   },
   { 
@@ -28,7 +28,7 @@ export const dummyProducts = [
     images: { primary: '/Acid wash Co -ord set purple(1).png', hover: '/Acid wash Co -ord set purple(2).png' }
   },
   { 
-    id: 8, name: 'Dream State Lounge Set', price: 2599, originalPrice: 3379, category: 'Co-ord Full Sets', colors: ['#111111', '#2a2a2a'], 
+    id: 8, name: 'Dream State Lounge Set', price: 2599, category: 'Co-ord Full Sets', colors: ['#111111', '#2a2a2a'], 
     images: { primary: '/Day dreamer mode co-ord set , black (1).png', hover: '/Day dreamer mode co-ord set , black (2).png' }
   },
   { 
@@ -36,15 +36,15 @@ export const dummyProducts = [
     images: { primary: '/Denim collar co-ord Set(1).png', hover: '/Denim collar co-ord Set(2).png' }
   },
   { 
-    id: 10, name: 'Indigo Muse Set', price: 2999, category: 'Co-ord Full Sets', colors: ['#4c6a92', '#6987b5'], 
+    id: 10, name: 'Indigo Muse Set', price: 2999, originalPrice: 3799, category: 'Co-ord Full Sets', colors: ['#4c6a92', '#6987b5'], 
     images: { primary: '/Denim embroidery co-ord Set(1).png', hover: '/Denim embroidery co-ord Set(2).png' }
   },
   { 
-    id: 11, name: 'Noir Indigo Set', price: 2999, category: 'Co-ord Full Sets', colors: ['#2d2f31', '#1c1c1c'], 
+    id: 11, name: 'Noir Indigo Set', price: 2999, originalPrice: 3799, category: 'Co-ord Full Sets', colors: ['#2d2f31', '#1c1c1c'], 
     images: { primary: '/Denim embroidery co-ord Set Black(1).png', hover: '/Denim embroidery co-ord Set Black(2).png' }
   },
   { 
-    id: 12, name: 'Rosé Dream Set', price: 2599, originalPrice: 3379, category: 'Co-ord Full Sets', colors: ['#c78b98', '#dfa8b4'], 
+    id: 12, name: 'Rosé Dream Set', price: 2599, category: 'Co-ord Full Sets', colors: ['#c78b98', '#dfa8b4'], 
     images: { primary: '/Dreamer embroidery co-ord Set Pink(1).png', hover: '/Dreamer embroidery co-ord Set Pink(2).png' }
   },
   { 
@@ -64,7 +64,7 @@ export const dummyProducts = [
     images: { primary: '/Empathy emb. co-ord set , purple(2).png', hover: '/Empathy emb. co-ord set , purple(2).png' }
   },
   { 
-    id: 17, name: 'Solstice Set', price: 2799, category: 'Co-ord Full Sets', colors: ['#ce6e2c', '#ffa500'], 
+    id: 17, name: 'Solstice Set', price: 2799, originalPrice: 3499, category: 'Co-ord Full Sets', colors: ['#ce6e2c', '#ffa500'], 
     images: { primary: '/Medusa emb. co-ord set , orange (1).png', hover: '/Medusa emb. co-ord set , orange (1).png' }
   },
   { 
@@ -72,19 +72,19 @@ export const dummyProducts = [
     images: { primary: '/My castle My rules short set , pink(1).png', hover: '/My castle My rules short set , pink(2).png' }
   },
   { 
-    id: 19, name: 'Coastal Fade Set', price: 2699, category: 'Co-ord Full Sets', colors: ['#8ba3ba', '#2c527e'], 
+    id: 19, name: 'Coastal Fade Set', price: 2699, originalPrice: 3499, category: 'Co-ord Full Sets', colors: ['#8ba3ba', '#2c527e'], 
     images: { primary: '/Ombre co-ord set , blue (1).png', hover: '/Ombre co-ord set , blue (2).png' }
   },
   { 
-    id: 20, name: 'Sunset Fade Set', price: 2699, category: 'Co-ord Full Sets', colors: ['#c97676', '#a13535'], 
+    id: 20, name: 'Sunset Fade Set', price: 2699, originalPrice: 3499, category: 'Co-ord Full Sets', colors: ['#c97676', '#a13535'], 
     images: { primary: '/Ombre co-ord set , red (1).png', hover: '/Ombre co-ord set , red (2).png' }
   },
   { 
-    id: 21, name: 'Heritage Denim Set', price: 2699, category: 'Co-ord Full Sets', colors: ['#3b5998', '#5c77b3'], 
+    id: 21, name: 'Heritage Denim Set', price: 2699, originalPrice: 3499, category: 'Co-ord Full Sets', colors: ['#3b5998', '#5c77b3'], 
     images: { primary: '/Overstitch denim Set(1).png', hover: '/Overstitch denim Set(2).png' }
   },
   { 
-    id: 22, name: 'Azure Denim Set', price: 2899, category: 'Co-ord Full Sets', colors: ['#4267b2', '#668bc7'], 
+    id: 22, name: 'Azure Denim Set', price: 2899, originalPrice: 3699, category: 'Co-ord Full Sets', colors: ['#4267b2', '#668bc7'], 
     images: { primary: '/Studd denim co-ord set(1).png', hover: '/Studd denim co-ord set(2).png' }
   },
   { 
@@ -92,11 +92,11 @@ export const dummyProducts = [
     images: { primary: '/Tokyo Rhinestone shorts set Black(1) copy 2.png', hover: '/Tokyo Rhinestone shorts set Black(2).png' }
   },
   { 
-    id: 24, name: 'Ocean Lights Shorts Set', price: 2299, category: 'Co-ord Full Sets', colors: ['#1a5276', '#2980b9'], 
+    id: 24, name: 'Ocean Lights Shorts Set', price: 2299, originalPrice: 2899, category: 'Co-ord Full Sets', colors: ['#1a5276', '#2980b9'], 
     images: { primary: '/Tokyo Rhinestone shorts set Blue(1).png', hover: '/Tokyo Rhinestone shorts set Blue(2).png' }
   },
   { 
-    id: 25, name: 'Cherry Lights Shorts Set', price: 2299, category: 'Co-ord Full Sets', colors: ['#990000', '#cc0000'], 
+    id: 25, name: 'Cherry Lights Shorts Set', price: 2299, originalPrice: 2899, category: 'Co-ord Full Sets', colors: ['#990000', '#cc0000'], 
     images: { primary: '/Tokyo Rhinestone shorts set red(1).png', hover: '/Tokyo Rhinestone shorts set red(2).png' }
   },
 

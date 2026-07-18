@@ -1,12 +1,26 @@
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const CartContext = createContext(null);
 
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem('dwitara_cart');
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      // Filter out any stale items that are missing critical fields
+      return parsed.filter(item => item && item.id && item.category && item.price);
+    } catch {
+      return [];
+    }
+  });
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  React.useEffect(() => {
+    localStorage.setItem('dwitara_cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (product, size, color) => {
     setCartItems(prev => {
@@ -42,6 +56,37 @@ export const CartProvider = ({ children }) => {
 
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
+  // 1. Calculate absolute base savings (originalPrice - price)
+  const absoluteSavings = cartItems.reduce((savings, item) => {
+    if (item.originalPrice && item.originalPrice > item.price) {
+      return savings + (item.originalPrice - item.price) * item.quantity;
+    }
+    return savings;
+  }, 0);
+
+  // 2. Buy 1 Co-ord set get 50% off any 1 Graphic tee logic (Limit to 2)
+  let promoDiscount = 0;
+  const numCoords = cartItems.reduce((acc, item) => item.category === 'Co-ord Full Sets' ? acc + item.quantity : acc, 0);
+  
+  if (numCoords > 0) {
+    const maxTeesToDiscount = Math.min(numCoords, 2);
+    // Find all graphic tees in cart, expand by quantity
+    const graphicTees = cartItems.filter(item => item.category === 'Graphic Tees');
+    let allTees = [];
+    graphicTees.forEach(tee => {
+      for (let i = 0; i < tee.quantity; i++) {
+        allTees.push(tee.price);
+      }
+    });
+
+    if (allTees.length > 0) {
+      // Sort highest price first to give them 50% off the most expensive tees
+      allTees.sort((a, b) => b - a);
+      for (let i = 0; i < Math.min(allTees.length, maxTeesToDiscount); i++) {
+        promoDiscount += allTees[i] * 0.5;
+      }
+    }
+  }
   return (
     <CartContext.Provider value={{ 
       cartItems, 
@@ -49,6 +94,9 @@ export const CartProvider = ({ children }) => {
       removeFromCart, 
       updateQuantity, 
       cartTotal,
+      absoluteSavings,
+      promoDiscount,
+      numCoords,
       isCartOpen,
       setIsCartOpen
     }}>

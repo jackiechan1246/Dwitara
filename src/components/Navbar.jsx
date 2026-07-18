@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ShoppingBag, Search, Menu } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import AuthModal from './AuthModal';
@@ -13,6 +14,22 @@ const Navbar = () => {
   const [shaking, setShaking] = useState(false);
   const { user } = useAuth();
   const { cartItems, setIsCartOpen } = useCart();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavClick = (e, targetId) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const el = document.getElementById(targetId);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const el = document.getElementById(targetId);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,14 +64,13 @@ const Navbar = () => {
           <div className="nav-left">
             <button className="icon-btn mobile-menu" aria-label="Menu"><Menu size={24} /></button>
             <div className="nav-links">
-              <a href="#new-arrival" className="nav-link">New Arrivals</a>
-              <a href="#categories" className="nav-link">Categories</a>
-              <a href="#about" className="nav-link">About Us</a>
+              <a href="/#trending" className="nav-link" onClick={(e) => handleNavClick(e, 'trending')}>New Arrivals</a>
+              <a href="/#categories" className="nav-link" onClick={(e) => handleNavClick(e, 'categories')}>Categories</a>
             </div>
           </div>
 
           <div className="nav-logo">
-            <a href="/"><h1>DWITARA</h1></a>
+            <Link to="/"><h1>DWITARA</h1></Link>
           </div>
 
           <div className="nav-right">

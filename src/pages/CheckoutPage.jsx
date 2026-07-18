@@ -8,7 +8,7 @@ import './CheckoutPage.css';
 
 const CheckoutPage = () => {
   const { user } = useAuth();
-  const { cartItems, cartTotal, setIsCartOpen } = useCart();
+  const { cartItems, cartTotal, absoluteSavings, promoDiscount, setIsCartOpen } = useCart();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -26,10 +26,14 @@ const CheckoutPage = () => {
     pincode: ''
   });
 
-  // Calculate expected delivery date (3 days from now)
-  const deliveryDate = new Date();
-  deliveryDate.setDate(deliveryDate.getDate() + 3);
-  const dateStr = deliveryDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  // Calculate expected delivery date (7-10 days from now)
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 7);
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + 10);
+  const minDateStr = minDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const maxDateStr = maxDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const dateStr = `${minDateStr} - ${maxDateStr}`;
 
   useEffect(() => {
     // If cart is empty, send back to home
@@ -68,7 +72,7 @@ const CheckoutPage = () => {
   // Calculate discounts
   const loginDiscount = Math.floor(cartTotal * 0.05);
   const onlineDiscount = paymentMethod === 'razorpay' ? Math.floor(cartTotal * 0.05) : 0;
-  const finalTotal = cartTotal - loginDiscount - onlineDiscount;
+  const finalTotal = cartTotal - promoDiscount - loginDiscount - onlineDiscount;
 
   const saveOrderToDB = async (paymentStatus, razorpayPaymentId = null) => {
     const orderData = {
@@ -102,7 +106,7 @@ const CheckoutPage = () => {
       alert("There was an issue securely saving your order. Please contact support.");
     } else {
       setIsSuccess(true);
-      
+
       const orderDetailsPayload = {
         customer: {
           name: `${formData.firstName} ${formData.lastName}`.trim(),
@@ -141,9 +145,9 @@ const CheckoutPage = () => {
       fetch('http://localhost:5000/api/push-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           orderDetails: orderDetailsPayload,
-          orderId: generatedShipmozoId 
+          orderId: generatedShipmozoId
         })
       }).catch(shipmozoErr => console.warn("Shipmozo push failed (non-critical):", shipmozoErr));
     }
@@ -173,7 +177,7 @@ const CheckoutPage = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ amount: finalTotal * 100 })
         });
-        
+
         if (!orderRes.ok) throw new Error('Failed to create order on backend');
         const orderData = await orderRes.json();
 
@@ -221,7 +225,7 @@ const CheckoutPage = () => {
           },
           theme: { color: '#1C1B1A' },
           modal: {
-            ondismiss: function() {
+            ondismiss: function () {
               setIsProcessing(false);
             }
           }
@@ -229,8 +233,8 @@ const CheckoutPage = () => {
 
         const paymentObj = new window.Razorpay(options);
         paymentObj.open();
-        
-        paymentObj.on('payment.failed', function(response) {
+
+        paymentObj.on('payment.failed', function (response) {
           alert(`Payment failed: ${response.error.description}`);
           setIsProcessing(false);
         });
@@ -258,30 +262,30 @@ const CheckoutPage = () => {
     <div className="checkout-container section-padding">
       <div className="checkout-main">
         <div className="checkout-steps">
-          
+
           {/* STEP 1: CONTACT */}
           <div className={`checkout-step ${step >= 1 ? 'active' : ''}`}>
             <h3 className="step-title">1. Contact Information</h3>
             {step === 1 ? (
               <div className="step-content">
-                <input 
-                  type="email" 
-                  name="email" 
-                  placeholder="Email" 
-                  value={formData.email} 
-                  onChange={handleInputChange} 
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   className="checkout-input"
                 />
-                <input 
-                  type="tel" 
-                  name="phone" 
-                  placeholder="Phone Number (+91)" 
-                  value={formData.phone} 
-                  onChange={handleInputChange} 
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number (+91)"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                   className="checkout-input"
                 />
-                <button 
-                  className="btn-primary mt-2" 
+                <button
+                  className="btn-primary mt-2"
                   onClick={() => setStep(2)}
                   disabled={!formData.email || !formData.phone}
                 >
@@ -332,8 +336,8 @@ const CheckoutPage = () => {
                   </datalist>
                   <input type="text" name="pincode" placeholder="PIN Code" value={formData.pincode} onChange={handleInputChange} className="checkout-input" />
                 </div>
-                <button 
-                  className="btn-primary mt-2" 
+                <button
+                  className="btn-primary mt-2"
                   onClick={() => setStep(3)}
                   disabled={!formData.firstName || !formData.address || !formData.city || !formData.pincode}
                 >
@@ -377,24 +381,24 @@ const CheckoutPage = () => {
               <div className="step-content">
                 <div className="payment-options">
                   <label className={`payment-label ${paymentMethod === 'razorpay' ? 'selected' : ''}`}>
-                    <input 
-                      type="radio" 
-                      name="payment" 
-                      value="razorpay" 
-                      onChange={(e) => setPaymentMethod(e.target.value)} 
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="razorpay"
+                      onChange={(e) => setPaymentMethod(e.target.value)}
                     />
                     <div className="payment-label-content">
                       <strong>Pay Online (Razorpay)</strong>
                       <span>Cards, UPI, Netbanking, Wallets</span>
                     </div>
                   </label>
-                  
+
                   <label className={`payment-label ${paymentMethod === 'cod' ? 'selected' : ''}`}>
-                    <input 
-                      type="radio" 
-                      name="payment" 
-                      value="cod" 
-                      onChange={(e) => setPaymentMethod(e.target.value)} 
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="cod"
+                      onChange={(e) => setPaymentMethod(e.target.value)}
                     />
                     <div className="payment-label-content">
                       <strong>Cash on Delivery (COD)</strong>
@@ -404,8 +408,8 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className="payment-actions">
-                  <button 
-                    className="btn-primary w-100 mt-2" 
+                  <button
+                    className="btn-primary w-100 mt-2"
                     onClick={handlePayment}
                     disabled={!paymentMethod}
                   >
@@ -447,7 +451,14 @@ const CheckoutPage = () => {
             <span>Login Discount (5%)</span>
             <span>- ₹{loginDiscount.toLocaleString('en-IN')}</span>
           </div>
-          
+
+          {promoDiscount > 0 && (
+            <div className="tot-row discount-row" style={{ color: '#10b981' }}>
+              <span>Co-ord Promo (50% off Tee)</span>
+              <span>- ₹{promoDiscount.toLocaleString('en-IN')}</span>
+            </div>
+          )}
+
           {paymentMethod === 'razorpay' && (
             <div className="tot-row discount-row" style={{ color: '#10b981' }}>
               <span>Online Payment (5%)</span>
@@ -463,6 +474,13 @@ const CheckoutPage = () => {
             <span>Total</span>
             <span>₹{finalTotal.toLocaleString('en-IN')}</span>
           </div>
+
+          {(absoluteSavings > 0 || promoDiscount > 0 || loginDiscount > 0 || onlineDiscount > 0) && (
+            <div className="tot-row savings-total" style={{ color: '#10b981', fontWeight: 'bold', marginTop: '1rem', borderTop: '2px solid #e2e8f0', paddingTop: '1rem' }}>
+              <span>Total Savings Today</span>
+              <span>₹{(absoluteSavings + promoDiscount + loginDiscount + onlineDiscount).toLocaleString('en-IN')}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LogOut, Package, User } from 'lucide-react';
 import { auth, signOut } from '../firebase';
 import './UserDropdown.css';
 
 const UserDropdown = ({ user }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -45,7 +47,7 @@ const UserDropdown = ({ user }) => {
             <p className="user-dropdown-email">{user.email}</p>
           </div>
           <div className="user-dropdown-body">
-            <button className="user-dropdown-item" onClick={() => setIsOpen(false)}>
+            <button className="user-dropdown-item" onClick={() => { setIsOpen(false); navigate('/orders'); }}>
               <Package size={16} /> My Orders
             </button>
             <div className="user-dropdown-divider"></div>

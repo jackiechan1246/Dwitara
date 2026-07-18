@@ -6,7 +6,7 @@ import { X, Trash2, ChevronRight, CheckCircle2 } from 'lucide-react';
 import './CartSidebar.css';
 
 const CartSidebar = () => {
-  const { cartItems, removeFromCart, updateQuantity, cartTotal, isCartOpen, setIsCartOpen } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, cartTotal, absoluteSavings, promoDiscount, isCartOpen, setIsCartOpen } = useCart();
   const { user } = useAuth();
   const [view, setView] = useState('cart'); // 'cart', 'success' (checkout removed)
   const navigate = useNavigate();
@@ -66,7 +66,14 @@ const CartSidebar = () => {
                             <span>{item.quantity}</span>
                             <button onClick={() => updateQuantity(index, 1)}>+</button>
                           </div>
-                          <p className="cart-item-price">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                          <p className="cart-item-price">
+                            {item.originalPrice && item.originalPrice > item.price && (
+                              <span style={{ textDecoration: 'line-through', color: '#9ca3af', marginRight: '6px', fontSize: '0.85em' }}>
+                                ₹{(item.originalPrice * item.quantity).toLocaleString('en-IN')}
+                              </span>
+                            )}
+                            ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                          </p>
                         </div>
                       </div>
                       <button className="cart-item-remove" onClick={() => removeFromCart(index)}>
@@ -88,6 +95,20 @@ const CartSidebar = () => {
                   <span>Subtotal</span>
                   <span className="cart-total-price">₹{cartTotal.toLocaleString('en-IN')}</span>
                 </div>
+
+                {promoDiscount > 0 && (
+                  <div className="cart-total-row" style={{ color: '#10b981' }}>
+                    <span>Co-ord Promo (50% off Tee)</span>
+                    <span>- ₹{promoDiscount.toLocaleString('en-IN')}</span>
+                  </div>
+                )}
+                
+                {(absoluteSavings > 0 || promoDiscount > 0) && (
+                  <div className="cart-total-row" style={{ color: '#10b981', fontWeight: 'bold' }}>
+                    <span>Total Savings</span>
+                    <span>₹{(absoluteSavings + promoDiscount).toLocaleString('en-IN')}</span>
+                  </div>
+                )}
 
                 {!user && (
                   <div className="cart-promo-box" style={{ background: '#fef3c7', padding: '0.75rem', borderRadius: '4px', marginBottom: '1rem', fontSize: '0.85rem', color: '#92400e' }}>
