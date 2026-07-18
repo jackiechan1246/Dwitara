@@ -9,6 +9,7 @@ import AdminPage from './pages/AdminPage';
 import OrdersPage from './pages/OrdersPage';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import FloatingCartButton from './components/FloatingCartButton';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -37,6 +38,7 @@ function App() {
         </Routes>
 
       <DummyFeatures />
+      <FloatingCartButton />
 
         <footer style={{
           padding: '4rem 2rem',
