@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext(null);
 
@@ -87,6 +88,10 @@ export const CartProvider = ({ children }) => {
       }
     }
   }
+  // 3. Login discount: 5% off the subtotal after promo for logged-in users
+  const { user } = useAuth();
+  const loginDiscount = user ? Math.round((cartTotal - promoDiscount) * 0.05) : 0;
+
   return (
     <CartContext.Provider value={{ 
       cartItems, 
@@ -96,6 +101,7 @@ export const CartProvider = ({ children }) => {
       cartTotal,
       absoluteSavings,
       promoDiscount,
+      loginDiscount,
       numCoords,
       isCartOpen,
       setIsCartOpen

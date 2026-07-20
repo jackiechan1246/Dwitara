@@ -59,7 +59,12 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
+      {!user && (
+        <div className="announcement-bar" onClick={() => setIsAuthOpen(true)}>
+          <span>✨ Login for an additional <strong>5% discount</strong> on your order ✨</span>
+        </div>
+      )}
+      <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''} ${!user ? 'has-announcement' : ''}`}>
         <div className="container nav-content">
           <div className="nav-left">
             <button className="icon-btn mobile-menu" aria-label="Menu"><Menu size={24} /></button>

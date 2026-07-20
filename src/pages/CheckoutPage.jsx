@@ -8,7 +8,7 @@ import './CheckoutPage.css';
 
 const CheckoutPage = () => {
   const { user } = useAuth();
-  const { cartItems, cartTotal, absoluteSavings, promoDiscount, setIsCartOpen } = useCart();
+  const { cartItems, cartTotal, absoluteSavings, promoDiscount, loginDiscount, setIsCartOpen } = useCart();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -70,8 +70,7 @@ const CheckoutPage = () => {
   };
 
   // Calculate discounts
-  const loginDiscount = Math.floor(cartTotal * 0.05);
-  const onlineDiscount = paymentMethod === 'razorpay' ? Math.floor(cartTotal * 0.05) : 0;
+  const onlineDiscount = paymentMethod === 'razorpay' ? Math.floor((cartTotal - promoDiscount - loginDiscount) * 0.05) : 0;
   const finalTotal = cartTotal - promoDiscount - loginDiscount - onlineDiscount;
 
   const saveOrderToDB = async (paymentStatus, razorpayPaymentId = null) => {

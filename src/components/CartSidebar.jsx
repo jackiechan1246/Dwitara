@@ -6,7 +6,7 @@ import { X, Trash2, ChevronRight, CheckCircle2 } from 'lucide-react';
 import './CartSidebar.css';
 
 const CartSidebar = () => {
-  const { cartItems, removeFromCart, updateQuantity, cartTotal, absoluteSavings, promoDiscount, isCartOpen, setIsCartOpen } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, cartTotal, absoluteSavings, promoDiscount, loginDiscount, isCartOpen, setIsCartOpen } = useCart();
   const { user } = useAuth();
   const [view, setView] = useState('cart'); // 'cart', 'success' (checkout removed)
   const navigate = useNavigate();
@@ -102,11 +102,18 @@ const CartSidebar = () => {
                     <span>- ₹{promoDiscount.toLocaleString('en-IN')}</span>
                   </div>
                 )}
+
+                {loginDiscount > 0 && (
+                  <div className="cart-total-row" style={{ color: '#10b981' }}>
+                    <span>Login Discount (5%)</span>
+                    <span>- ₹{loginDiscount.toLocaleString('en-IN')}</span>
+                  </div>
+                )}
                 
-                {(absoluteSavings > 0 || promoDiscount > 0) && (
+                {(absoluteSavings > 0 || promoDiscount > 0 || loginDiscount > 0) && (
                   <div className="cart-total-row" style={{ color: '#10b981', fontWeight: 'bold' }}>
                     <span>Total Savings</span>
-                    <span>₹{(absoluteSavings + promoDiscount).toLocaleString('en-IN')}</span>
+                    <span>₹{(absoluteSavings + promoDiscount + loginDiscount).toLocaleString('en-IN')}</span>
                   </div>
                 )}
 
