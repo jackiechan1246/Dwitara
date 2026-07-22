@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ShoppingBag } from 'lucide-react';
 import './ProductList.css';
@@ -15,6 +16,7 @@ const ProductList = ({ title = "Trending Now", subtitle = "Discover our most lov
   const [toast, setToast] = useState(null); // { name } of item just added
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
   const { addToCart, numCoords } = useCart();
+  const navigate = useNavigate();
 
   const handleSizeSelect = (productId, size) => {
     setSelectedSizes(prev => ({ ...prev, [productId]: size }));
@@ -64,12 +66,19 @@ const ProductList = ({ title = "Trending Now", subtitle = "Discover our most lov
                   <div className="discount-badge">LIMITED TIME</div>
                 )}
                 {product.images ? (
-                  <>
+                  <div 
+                    onClick={() => navigate(`/product/${product.id}`)} 
+                    style={{ cursor: 'pointer', height: '100%', width: '100%', display: 'flex' }}
+                  >
                     <img src={product.images.primary} alt={product.name} className="product-image product-image-primary" />
                     <img src={product.images.hover} alt={`${product.name} hover view`} className="product-image product-image-hover" />
-                  </>
+                  </div>
                 ) : (
-                  <div className="product-image-placeholder">
+                  <div 
+                    className="product-image-placeholder"
+                    onClick={() => navigate(`/product/${product.id}`)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <span className="placeholder-text-small">IMG: {product.name}</span>
                   </div>
                 )}
@@ -86,7 +95,7 @@ const ProductList = ({ title = "Trending Now", subtitle = "Discover our most lov
                 </div>
               </div>
 
-                <div className="product-info">
+                <div className="product-info" onClick={() => navigate(`/product/${product.id}`)} style={{ cursor: 'pointer' }}>
                   <span className="product-category">{product.category}</span>
                   <h3 className="product-title">{product.name}</h3>
                   <p className="product-price">

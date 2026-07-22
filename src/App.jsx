@@ -1,9 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import DummyFeatures from './components/DummyFeatures';
 import Home from './pages/Home';
 import CategoryPage from './pages/CategoryPage';
+import ProductDetailsPage from './pages/ProductDetailsPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AdminPage from './pages/AdminPage';
 import OrdersPage from './pages/OrdersPage';
@@ -13,10 +14,14 @@ import FloatingCartButton from './components/FloatingCartButton';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
+  const navType = useNavigationType();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    // Only scroll to top if we are NOT navigating backwards (POP)
+    if (navType !== 'POP') {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, navType]);
 
   return null;
 }
@@ -33,6 +38,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/category/:id" element={<CategoryPage />} />
+          <Route path="/product/:id" element={<ProductDetailsPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/orders" element={<OrdersPage />} />
         </Routes>
