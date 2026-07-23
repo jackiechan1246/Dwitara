@@ -1,4 +1,5 @@
-import ReactPixel from "react-facebook-pixel";
+import * as ReactPixelRaw from "react-facebook-pixel";
+const ReactPixel = ReactPixelRaw.default || ReactPixelRaw;
 
 const options = {
   autoConfig: true,
