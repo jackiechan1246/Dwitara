@@ -118,10 +118,16 @@ const CheckoutPage = () => {
     } else {
       setIsSuccess(true);
       
-      // Track Purchase event
+      // Track Purchase event with rich details
       ReactPixel.track("Purchase", {
         value: finalTotal,
-        currency: "INR"
+        currency: "INR",
+        contents: cartItems.map(item => ({
+          id: item.id,
+          quantity: item.quantity
+        })),
+        content_type: "product",
+        num_items: cartItems.length
       });
 
       const orderDetailsPayload = {
