@@ -11,6 +11,7 @@ import OrdersPage from './pages/OrdersPage';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import FloatingCartButton from './components/FloatingCartButton';
+import { initMetaPixel } from './lib/metaPixel';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -27,6 +28,10 @@ function ScrollToTop() {
 }
 
 function App() {
+  useEffect(() => {
+    initMetaPixel();
+  }, []);
+
   return (
     <AuthProvider>
       <CartProvider>

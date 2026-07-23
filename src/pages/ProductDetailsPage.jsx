@@ -4,6 +4,7 @@ import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { dummyProducts } from '../data/products';
 import SizeChartModal from '../components/SizeChartModal';
+import ReactPixel from '../lib/metaPixel';
 import './ProductDetailsPage.css';
 
 const standardSizes = ['XS', 'S', 'M', 'L', 'XL'];
@@ -28,6 +29,14 @@ const ProductDetailsPage = () => {
     // Automatically select the first color if available
     if (product && product.colors && product.colors.length > 0) {
       setSelectedColor(product.colors[0]);
+    }
+
+    if (product) {
+      ReactPixel.track("ViewContent", {
+        content_name: product.name,
+        value: product.price,
+        currency: "INR"
+      });
     }
   }, [product]);
 

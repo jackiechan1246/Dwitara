@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useAuth } from './AuthContext';
+import ReactPixel from '../lib/metaPixel';
 
 const CartContext = createContext(null);
 
@@ -36,6 +37,11 @@ export const CartProvider = ({ children }) => {
         );
       }
       return [...prev, { ...product, selectedSize: size, selectedColor: color, quantity: 1 }];
+    });
+
+    ReactPixel.track("AddToCart", {
+      value: product.price,
+      currency: "INR"
     });
   };
 

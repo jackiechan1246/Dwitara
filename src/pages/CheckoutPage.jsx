@@ -4,6 +4,7 @@ import { ChevronRight, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../supabase';
+import ReactPixel from '../lib/metaPixel';
 import './CheckoutPage.css';
 
 const CheckoutPage = () => {
@@ -41,6 +42,17 @@ const CheckoutPage = () => {
       navigate('/');
     }
   }, [cartItems, navigate, isSuccess]);
+
+  // InitiateCheckout event
+  useEffect(() => {
+    if (cartTotal > 0 && !isSuccess) {
+      const finalTotal = cartTotal - promoDiscount - loginDiscount - (paymentMethod === 'razorpay' ? Math.floor((cartTotal - promoDiscount - loginDiscount) * 0.05) : 0);
+      ReactPixel.track("InitiateCheckout", {
+        value: finalTotal, // Using final calculated total including discounts
+        currency: "INR"
+      });
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -105,6 +117,12 @@ const CheckoutPage = () => {
       alert("There was an issue securely saving your order. Please contact support.");
     } else {
       setIsSuccess(true);
+      
+      // Track Purchase event
+      ReactPixel.track("Purchase", {
+        value: finalTotal,
+        currency: "INR"
+      });
 
       const orderDetailsPayload = {
         customer: {
