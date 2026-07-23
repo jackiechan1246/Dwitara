@@ -27,8 +27,7 @@ export const initMetaPixel = () => {
     s.parentNode.insertBefore(t, s);
   })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
 
-  window.fbq("init", PIXEL_ID);
-  window.fbq("track", "PageView");
+  window.fbq("init", PIXEL_ID, {});
   initialized = true;
 };
 

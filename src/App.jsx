@@ -11,7 +11,7 @@ import OrdersPage from './pages/OrdersPage';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import FloatingCartButton from './components/FloatingCartButton';
-import { initMetaPixel } from './lib/metaPixel';
+import ReactPixel, { initMetaPixel } from './lib/metaPixel';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -27,15 +27,23 @@ function ScrollToTop() {
   return null;
 }
 
-function App() {
+function PixelTracker() {
+  const location = useLocation();
+
   useEffect(() => {
     initMetaPixel();
-  }, []);
+    ReactPixel.pageView();
+  }, [location.pathname]);
 
+  return null;
+}
+
+function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
+          <PixelTracker />
           <ScrollToTop />
           <Navbar />
 
