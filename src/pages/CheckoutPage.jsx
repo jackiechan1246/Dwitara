@@ -7,6 +7,8 @@ import { supabase } from '../supabase';
 import ReactPixel from '../lib/metaPixel';
 import './CheckoutPage.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const CheckoutPage = () => {
   const { user } = useAuth();
   const { cartItems, cartTotal, absoluteSavings, promoDiscount, loginDiscount, setIsCartOpen } = useCart();
@@ -158,14 +160,14 @@ const CheckoutPage = () => {
       };
 
       // 1. Send email notification (fire-and-forget, don't block success)
-      fetch('http://localhost:5000/api/notify-order', {
+      fetch(`${API_URL}/api/notify-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderDetails: orderDetailsPayload })
       }).catch(emailErr => console.warn("Email notification failed (non-critical):", emailErr));
 
       // 2. Push to Shipmozo Logistics (fire-and-forget)
-      fetch('http://localhost:5000/api/push-order', {
+      fetch(`${API_URL}/api/push-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -195,7 +197,7 @@ const CheckoutPage = () => {
 
       try {
         // STEP 1: Create Order on Backend
-        const orderRes = await fetch('http://localhost:5000/api/create-order', {
+        const orderRes = await fetch(`${API_URL}/api/create-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ amount: finalTotal * 100 })
@@ -215,7 +217,7 @@ const CheckoutPage = () => {
           handler: async function (response) {
             try {
               // STEP 3: Verify Signature on Backend
-              const verifyRes = await fetch('http://localhost:5000/api/verify-payment', {
+              const verifyRes = await fetch(`${API_URL}/api/verify-payment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
