@@ -125,7 +125,7 @@ const CheckoutPage = () => {
         value: finalTotal,
         currency: "INR",
         contents: cartItems.map(item => ({
-          id: item.id,
+          id: String(item.id),
           quantity: item.quantity
         })),
         content_type: "product",
